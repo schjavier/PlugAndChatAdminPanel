@@ -8,20 +8,20 @@ export const routes: Routes = [
       .then((m) => m.LoginComponent),
     canActivate: [publicGuard],
   },
-  // {
-  //   path: 'admin',
-  //   loadComponent: () =>
-  //     import('./components/admin/admin-layout').then((m) => m.AdminLayoutComponent),
-  //   canActivate: [authGuard],
-  //   children: [
-  //     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  //     {
-  //       path: 'dashboard',
-  //       loadComponent: () =>
-  //         import('./components/dashboard/dashboard').then((m) => m.DashboardComponent),
-  //     },
-  //   ],
-  // },
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./components/admin/admin-layout').then((m) => m.AdminLayout),
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./components/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+    ],
+  },
   {
     path: '**',
     redirectTo: 'login',
