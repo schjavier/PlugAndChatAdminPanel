@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --bg-dark: hsl(222, 47%, 11%);
+  --card-bg: rgba(30, 41, 59, 0.5);
+  --primary: hsl(217, 91%, 60%);
+  --primary-hover: hsl(217, 91%, 50%);
+  --text-main: hsl(210, 40%, 98%);
+  --text-muted: hsl(215, 20%, 65%);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --error-color: hsl(0, 84%, 60%);
+}
+
+  html{
+    background-color: var(--bg-dark);
+  }
+
