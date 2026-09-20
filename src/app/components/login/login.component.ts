@@ -45,6 +45,7 @@ export class LoginComponent {
         } else if (err.status === 401 || err.status === 403) {
           this.errorMessage.set('Credenciales incorrectas para este inquilino.');
         } else {
+          console.log(err);
           this.errorMessage.set('Error al conectar con el servidor.');
         }
       },

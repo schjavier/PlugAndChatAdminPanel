@@ -5,6 +5,7 @@ import { TenantResponse } from '../../interfaces/tenant-response';
 import { API_URL } from '../../config/api.config';
 import { LoginAdminResponse } from '../../interfaces/login-admin-response';
 import { AuthenticatedUser } from '../../interfaces/authenticated-user';
+import { LoginRequest } from '../../interfaces/login-request';
 
 @Service()
 export class AuthService {
@@ -28,8 +29,13 @@ export class AuthService {
       switchMap((tenant) => {
         const headers = new HttpHeaders({ 'X-Tenant-ID': tenant.uuid });
 
+        const body:LoginRequest = {
+          email: email,
+          password: password,
+        }
+
         return this.httpClient
-          .post<LoginAdminResponse>(`${API_URL}/login/admin`, { email, password }, { headers })
+          .post<LoginAdminResponse>(`${API_URL}/login/admin`, body, { headers })
           .pipe(
             tap((res) => {
               localStorage.setItem('admin_tenant_id', tenant.uuid);
@@ -38,6 +44,8 @@ export class AuthService {
               this.currentUser.set(res.email);
               this.tenantId.set(tenant.uuid);
               this.tenantName.set(tenant.name);
+              this.isInitializing.set(false);
+              console.log(this.currentUser(), this.tenantName(), this.tenantId());
             }),
           );
       }),
@@ -63,12 +71,13 @@ export class AuthService {
     return this.httpClient.post<void>(`${API_URL}/logout`, {}).pipe(
       tap(() => this.logoutLocal()),
       catchError((err) => {
-        this.logoutLocal(); // Asegura limpieza en caso de fallos de red
+        this.logoutLocal();
         throw err;
       }),
     );
   }
 
+  //Metodo para asegurar la limpieza de local Storage
   private logoutLocal(): void {
     localStorage.removeItem('admin_tenant_id');
     localStorage.removeItem('admin_tenant_name');

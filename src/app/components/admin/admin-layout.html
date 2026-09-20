@@ -1,1 +1,72 @@
-<p>admin-layout works!</p>
+<div class="admin-layout">
+  <!-- Barra Lateral (Sidebar) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">PlugAndChat</span>
+      </div>
+      @if (authService.tenantName()) {
+        <div class="tenant-badge" title="Tenant Activo">
+          <span class="badge-dot"></span>
+          {{ authService.tenantName() }}
+        </div>
+      }
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a routerLink="/admin/chats" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">Chats en Vivo</span>
+      </a>
+      <a routerLink="/admin/agents" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Agentes</span>
+      </a>
+      <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Configuración</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="version-tag">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- Área Principal -->
+  <div class="main-wrapper">
+    <!-- Encabezado Superior (Header) -->
+    <header class="top-header">
+      <div class="header-left">
+        <h1 class="header-title">Panel de Control</h1>
+      </div>
+
+      <div class="header-right">
+        @if (authService.currentUser()) {
+          <div class="user-profile">
+            <div class="avatar">{{ authService.currentUser()?.charAt(0)?.toUpperCase() }}</div>
+            <div class="user-info">
+              <span class="user-email">{{ authService.currentUser() }}</span>
+              <span class="user-status">En línea</span>
+            </div>
+          </div>
+        }
+
+        <button (click)="onLogout()" class="btn-logout" title="Cerrar Sesión">
+          <span class="logout-icon">🚪</span>
+          <span>Salir</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenido Dinámico de las Vistas Hijas -->
+    <main class="content-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
