@@ -1,1 +1,137 @@
-<p>dashboard works!</p>
+<div class="dashboard-wrapper">
+  <!-- Saludo / Welcome Banner -->
+  <section class="welcome-section">
+    <div class="welcome-text">
+      <h2>¡Bienvenido de nuevo, {{ authService.currentUser() }}! 👋</h2>
+      <p>Aquí tienes el resumen operativo en tiempo real para <strong>{{ authService.tenantName() }}</strong>.</p>
+    </div>
+  </section>
+
+  <!-- Métricas KPI Cards -->
+  <section class="kpi-grid">
+    <div class="kpi-card highlight">
+      <div class="kpi-header">
+        <span class="kpi-title">Salas Activas</span>
+        <span class="kpi-icon">💬</span>
+      </div>
+      <div class="kpi-value">{{ activeRoomsCount() }}</div>
+      <span class="kpi-subtitle">({{ openRoomsCount() }} sin asignar / {{ assignedRoomsCount() }} en curso)</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Agentes Conectados</span>
+        <span class="kpi-icon">👥</span>
+      </div>
+      <div class="kpi-value">{{ onlineAgentsCount() }}</div>
+      <span class="kpi-subtitle">Listos para recibir chats</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Tiempo de Respuesta</span>
+        <span class="kpi-icon">⚡</span>
+      </div>
+      <div class="kpi-value">{{ avgResponseTime() }}</div>
+      <span class="kpi-subtitle">Promedio de hoy</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Total Salas Registradas</span>
+        <span class="kpi-icon">📁</span>
+      </div>
+      <div class="kpi-value">{{ rooms().length }}</div>
+      <span class="kpi-subtitle">Histórico total del inquilino</span>
+    </div>
+  </section>
+
+  <!-- Panel de Contenido Principal -->
+  <div class="dashboard-main-grid">
+    <!-- Tabla de Actividad Reciente -->
+    <section class="panel-section recent-activity">
+      <div class="panel-header">
+        <h3>Salas de Chat Recientes</h3>
+        <button (click)="loadRooms()" class="btn-refresh" title="Recargar">Actualizar</button>
+      </div>
+
+      @if (isLoading()) {
+        <div class="state-message">
+          <span class="spinner"></span> Cargando salas de chat...
+        </div>
+      } @else if (errorMessage()) {
+        <div class="error-banner">
+          {{ errorMessage() }}
+        </div>
+      } @else if (rooms().length === 0) {
+        <div class="state-message">
+          No hay salas de chat registradas para este inquilino.
+        </div>
+      } @else {
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID / UUID</th>
+                <th>Cliente / Visitante</th>
+                <th>Estado</th>
+                <th>Fecha de Creación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (room of rooms(); track room.uuid) {
+                <tr>
+                  <td class="font-mono" [title]="room.uuid">{{ room.uuid.substring(0, 8) }}...</td>
+                  <td>{{ room.guestName || 'Visitante Anónimo' }}</td>
+                  <td>
+                    <span class="status-badge" [class]="room.status.toLowerCase()">
+                      {{ room.status }}
+                    </span>
+                  </td>
+                  <td class="text-muted">{{ room.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  <td>
+                    <a routerLink="/admin/chats" class="btn-action">Atender</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <!-- Acciones Rápidas -->
+    <section class="panel-section quick-actions">
+      <div class="panel-header">
+        <h3>Acciones Rápidas</h3>
+      </div>
+
+      <div class="actions-list">
+        <a routerLink="/admin/chats" class="action-card">
+          <span class="action-icon">💬</span>
+          <div class="action-info">
+            <h4>Consola de Chats</h4>
+            <p>Atender conversaciones en vivo</p>
+          </div>
+        </a>
+
+        <a routerLink="/admin/agents" class="action-card">
+          <span class="action-icon">👤+</span>
+          <div class="action-info">
+            <h4>Gestionar Agentes</h4>
+            <p>Agregar o editar cuentas del equipo</p>
+          </div>
+        </a>
+
+        <a routerLink="/admin/settings" class="action-card">
+          <span class="action-icon">⚙️</span>
+          <div class="action-info">
+            <h4>Configurar Inquilino</h4>
+            <p>Ajustes del widget y claves API</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
